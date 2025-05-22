@@ -10,12 +10,15 @@ sns.set(style="whitegrid")
 def load_data(file):  
     try:
         data = pd.read_csv(file)
-        # Check if required columns exist
-        if 'CGPA' not in data.columns or 'Package(LPA)' not in data.columns:
-            st.error("❌ CSV must contain 'CGPA' and 'Package(LPA)' columns.")
+        required_columns = {'CGPA', 'Package(LPA)'}
+        if not required_columns.issubset(set(data.columns)):
+            st.error("❌ CSV must contain exactly these columns: CGPA, Package(LPA)")
             return None
         st.success("✅ Data loaded successfully.")
         return data
+    except Exception as e:
+        st.error(f"❌ Error loading data: {e}")
+        return None
 
 def clean_data(data):
     if data is None:
